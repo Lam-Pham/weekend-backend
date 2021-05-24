@@ -1,0 +1,7 @@
+POST http://localhost:3001/api/spots 
+Content-Type: application/json
+
+{
+    "activity": "Watch the sunset",
+    "location": "Hilltop Park"
+}

@@ -1,6 +1,17 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
+const requestLogger = (request, response, next) => {
+    console.log('Method:', request.method)
+    console.log('Path:  ', request.path)
+    console.log('Body:  ', request.body)
+    console.log('---')
+    next()
+}
+app.use(requestLogger)
+
 let spots = [
     {
         id: 1,
@@ -35,12 +46,41 @@ app.get('/api/spots/:id', (request, response) => {
     }
 })
 
+app.post('/api/spots', (request, response) => {
+    if (!body.activity || !body.location) {
+        return response.status(400).json({ 
+          error: 'content missing' 
+        })
+    }
+    
+    const newId = spots.length > 0
+    ? (Math.max(...spots.map(n => n.id))+1) 
+    : 0
+
+    const spot = {
+        activity: body.activity,
+        location: boy.location,
+        date: new Date(),
+        id: newId
+    }
+
+    spots = spots.concat(spot)
+
+    response.json(spot)
+})
+
 app.delete('/api/spots/:id', (request, response) => {
     const id = Number(request.params.id)
     spots = spots.filter(spot => spot.id !== id)
   
     response.status(204).end()
 })
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
+  
+app.use(unknownEndpoint)
 
 const PORT = 3001
 app.listen(PORT, () => {
