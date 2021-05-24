@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/index.css"],"names":[],"mappings":"AAAA,GACE,UAAW,CACX,iBACF,CAEA,MACE,aAAuB,CACvB,eAAgB,CAChB,cACF","file":"main.4d5c119e.chunk.css","sourcesContent":["h1 {\n  color: blue;\n  font-style: italic;\n}\n\n.spot {\n  color: rgb(121, 57, 57);\n  padding-top: 3px;\n  font-size: 15px;\n}\n"]}
