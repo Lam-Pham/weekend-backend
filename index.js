@@ -28,12 +28,19 @@ app.get('/api/spots/:id', (request, response) => {
     const id = Number(request.params.id)
     const spot = spots.find(spot => spot.id === id)
 
-    if (note) {
-        response.json(note)
+    if (spot) {
+        response.json(spot)
     } else {
         response.status(404).end()
     }
-  })
+})
+
+app.delete('/api/spots/:id', (request, response) => {
+    const id = Number(request.params.id)
+    spots = spots.filter(spot => spot.id !== id)
+  
+    response.status(204).end()
+})
 
 const PORT = 3001
 app.listen(PORT, () => {
