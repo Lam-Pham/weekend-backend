@@ -1,7 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const mongoose = require('mongoose')
+const Spot = require('./models/spot')
 
 app.use(express.json())
 app.use(cors())
@@ -13,20 +14,6 @@ const requestLogger = (request, response, next) => {
     next()
 }
 app.use(requestLogger)
-
-// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
-const url =
-  'mongodb+srv://test:awesome1@cluster0.coqza.mongodb.net/weekend?retryWrites=true&w=majority'
-
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
-
-const spotSchema = new mongoose.Schema({
-  activity: String,
-  location: String,
-  date: Date,
-})
-
-const Spot = mongoose.model('Spot', spotSchema)
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
