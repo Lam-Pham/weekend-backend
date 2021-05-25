@@ -26,38 +26,28 @@ app.get('/api/spots', (request, response) => {
 })
 
 app.get('/api/spots/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const spot = spots.find(spot => spot.id === id)
-
-    if (spot) {
+    Note.findById(request.params.id).then(spot => {
         response.json(spot)
-    } else {
-        response.status(404).end()
-    }
+    })
 })
 
 app.post('/api/spots', (request, response) => {
     const body = request.body
-    if (!body.activity || !body.location) {
+    if ((body.activity || body.location) === undefined) {
         return response.status(400).json({ 
           error: 'content missing' 
         })
     }
-    
-    const newId = spots.length > 0
-    ? (Math.max(...spots.map(n => n.id))+1) 
-    : 0
 
-    const spot = {
+    const spot = new Spot({
         activity: body.activity,
         location: body.location,
         date: new Date(),
-        id: newId
-    }
+    })
 
-    spots = spots.concat(spot)
-
-    response.json(spot)
+    spot.save().then(savedSpot => {
+        response.json(savedSpot)
+    })
 })
 
 app.delete('/api/spots/:id', (request, response) => {
