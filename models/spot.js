@@ -11,9 +11,18 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
     })
 
 const spotSchema = new mongoose.Schema({
-  activity: String,
-  location: String,
-  date: Date,
+    activity: {
+      type: String,
+      required: true
+    },
+    location: {
+        type: String,
+        required: true
+    },
+    date: {
+        type: Date,
+        required: true
+    },
 })
 
 spotSchema.set('toJSON', {
