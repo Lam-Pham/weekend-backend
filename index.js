@@ -4,8 +4,6 @@ const app = express()
 const cors = require('cors')
 const Spot = require('./models/spot')
 
-app.use(express.json())
-app.use(cors())
 const requestLogger = (request, response, next) => {
     console.log('Method:', request.method)
     console.log('Path:  ', request.path)
@@ -13,7 +11,15 @@ const requestLogger = (request, response, next) => {
     console.log('---')
     next()
 }
+
+// MIDDLEWARE
+
+app.use(express.static('build'))
+app.use(express.json())
 app.use(requestLogger)
+app.use(cors())
+
+// ROUTES
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
@@ -26,9 +32,15 @@ app.get('/api/spots', (request, response) => {
 })
 
 app.get('/api/spots/:id', (request, response) => {
-    Note.findById(request.params.id).then(spot => {
-        response.json(spot)
-    })
+    Spot.findById(request.params.id)
+        .then(spot => {
+            if (spot) {
+                response.json(spot)
+            } else {
+                response.status(404).end()
+            } 
+        })
+        .catch(error => next(error))            // passing off to error handling middleware
 })
 
 app.post('/api/spots', (request, response) => {
@@ -60,8 +72,21 @@ app.delete('/api/spots/:id', (request, response) => {
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
-  
+// handler of requests with result to unknown endpoints
 app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+  
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'malformatted id' })
+    } 
+  
+    next(error)
+}
+  
+// handler of requests with result to errors
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
