@@ -1,9 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const Spot = require('./models/spot')
 
-app.use(express.json())
-app.use(cors())
 const requestLogger = (request, response, next) => {
     console.log('Method:', request.method)
     console.log('Path:  ', request.path)
@@ -11,79 +11,83 @@ const requestLogger = (request, response, next) => {
     console.log('---')
     next()
 }
-app.use(requestLogger)
-app.use(express.static('build'))
 
-let spots = [
-    {
-        id: 1,
-        activity: "Go surfing",
-        location: "Seal Beach",
-        date: "2019-05-30T17:30:31.098Z"
-      },
-      {
-        id: 2,
-        activity: "Get food and drinks",
-        location: "2nd and PCH",
-        date: "2019-05-30T18:39:34.091Z"
-      },
-]
+// MIDDLEWARE
+
+app.use(express.static('build'))
+app.use(express.json())
+app.use(requestLogger)
+app.use(cors())
+
+// ROUTES
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/spots', (request, response) => {
-  response.json(spots)
+    Spot.find({}).then(spots => {
+        response.json(spots)
+    })
 })
 
 app.get('/api/spots/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const spot = spots.find(spot => spot.id === id)
-
-    if (spot) {
-        response.json(spot)
-    } else {
-        response.status(404).end()
-    }
+    Spot.findById(request.params.id)
+        .then(spot => {
+            if (spot) {
+                response.json(spot)
+            } else {
+                response.status(404).end()
+            } 
+        })
+        .catch(error => next(error))            // passing off to error handling middleware
 })
 
 app.post('/api/spots', (request, response) => {
     const body = request.body
-    if (!body.activity || !body.location) {
+    if ((body.activity || body.location) === undefined) {
         return response.status(400).json({ 
           error: 'content missing' 
         })
     }
-    
-    const newId = spots.length > 0
-    ? (Math.max(...spots.map(n => n.id))+1) 
-    : 0
 
-    const spot = {
+    const spot = new Spot({
         activity: body.activity,
         location: body.location,
         date: new Date(),
-        id: newId
-    }
+    })
 
-    spots = spots.concat(spot)
-
-    response.json(spot)
+    spot.save().then(savedSpot => {
+        response.json(savedSpot)
+    })
 })
 
-app.delete('/api/spots/:id', (request, response) => {
-    const id = Number(request.params.id)
-    spots = spots.filter(spot => spot.id !== id)
-  
-    response.status(204).end()
+app.delete('/api/spots/:id', (request, response, next) => {
+    Note.findByIdAndRemove(request.params.id)
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
-  
+// handler of requests with result to unknown endpoints
 app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+  
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'malformatted id' })
+    } 
+  
+    next(error)
+}
+  
+// handler of requests with result to errors
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
