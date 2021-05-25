@@ -62,11 +62,12 @@ app.post('/api/spots', (request, response) => {
     })
 })
 
-app.delete('/api/spots/:id', (request, response) => {
-    const id = Number(request.params.id)
-    spots = spots.filter(spot => spot.id !== id)
-  
-    response.status(204).end()
+app.delete('/api/spots/:id', (request, response, next) => {
+    Note.findByIdAndRemove(request.params.id)
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
