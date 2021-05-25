@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const mongoose = require('mongoose')
 
 app.use(express.json())
 app.use(cors())
@@ -13,27 +14,28 @@ const requestLogger = (request, response, next) => {
 }
 app.use(requestLogger)
 
-let spots = [
-    {
-        id: 1,
-        activity: "Go surfing",
-        location: "Seal Beach",
-        date: "2019-05-30T17:30:31.098Z"
-      },
-      {
-        id: 2,
-        activity: "Get food and drinks",
-        location: "2nd and PCH",
-        date: "2019-05-30T18:39:34.091Z"
-      },
-]
+// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
+const url =
+  'mongodb+srv://test:awesome1@cluster0.coqza.mongodb.net/weekend?retryWrites=true&w=majority'
+
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+
+const spotSchema = new mongoose.Schema({
+  activity: String,
+  location: String,
+  date: Date,
+})
+
+const Spot = mongoose.model('Spot', spotSchema)
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/spots', (request, response) => {
-  response.json(spots)
+    Spot.find({}).then(spots => {
+        response.json(spots)
+    })
 })
 
 app.get('/api/spots/:id', (request, response) => {
