@@ -22,7 +22,7 @@ app.use(cors())
 // ROUTES
 
 app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
+    response.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/spots', (request, response) => {
