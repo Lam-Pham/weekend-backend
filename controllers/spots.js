@@ -1,6 +1,6 @@
 
 const spotsRouter = require('express').Router()
-const Spot = require('./models/spot')
+const Spot = require('../models/spot')
 
 spotsRouter.get('/', (request, response) => {
     Spot.find({})
