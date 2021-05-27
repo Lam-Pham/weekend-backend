@@ -1,13 +1,13 @@
 const mongoose = require('mongoose')
 
-const url = process.env.MONGODB_URI
+const url = config.MONGODB_URI
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
     .then(result => {
-        console.log('connected to MongoDB!')
+        logger.info('connected to MongoDB!')
     })
     .catch((error) => {
-        console.log('error connecting to MongoDB:', error.message)
+        logger.error('error connecting to MongoDB:', error.message)
     })
 
 const spotSchema = new mongoose.Schema({
