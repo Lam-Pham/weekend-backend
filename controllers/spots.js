@@ -36,3 +36,11 @@ spotsRouter.post('/', (request, response, next) => {
         })
         .catch(error => next(error))
 })
+
+spotsRouter.delete('/:id', (request, response, next) => {
+    Note.findByIdAndRemove(request.params.id)
+        .then(() => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
+})
