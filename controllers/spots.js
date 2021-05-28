@@ -2,11 +2,9 @@
 const spotsRouter = require('express').Router()
 const Spot = require('../models/spot')
 
-spotsRouter.get('/', (request, response) => {
-    Spot.find({})
-        .then(spots => {
-            response.json(notes)
-        })
+spotsRouter.get('/', async (request, response) => {
+    const spots = await Spot.find({})
+    response.json(spots)
 })
 
 spotsRouter.get(':id', (request, response, next) => {

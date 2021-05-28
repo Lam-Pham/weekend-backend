@@ -11,6 +11,7 @@ const mongoose = require('mongoose')
 const spotsRouter = require('./controllers/spots')
 
 logger.info('connecting to', config.MONGODB_URI)
+url = config.MONGODB_URI
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
     .then(result => {
