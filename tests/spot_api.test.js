@@ -16,12 +16,37 @@ const initialSpots = [
     date: new Date(),
   },
 ]
+
 beforeEach(async () => {
   await Spot.deleteMany({})
   let spotObject = new Spot(initialSpots[0])
   await spotObject.save()
   spotObject = new Spot(initialSpots[1])
   await spotObject.save()
+})
+
+test('a valid spot can be added', async () => {
+    const newSpot = {
+        activity: 'testing the backend',
+        location: 'casa de Lam',
+        date: new Date()
+    }
+
+    await api
+        .post('/api/spots')
+        .send(newSpot)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/spots')
+
+    const contents = response.body.map(r => [r.activity, r.location])
+
+    expect(response.body).toHaveLength(initialSpots.length + 1)
+    expect(contents).toContainEqual(
+        ['testing the backend',
+        'casa de Lam']
+    )
 })
 
 test('spots are returned as json', async () => {
