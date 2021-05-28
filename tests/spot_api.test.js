@@ -2,8 +2,27 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-
 const api = supertest(app)
+const Spot = require('../models/spot')
+const initialSpots = [
+  {
+    activity: 'Ride bikes',
+    location: 'Long Beach',
+    date: new Date(),
+  },
+  {
+    activity: 'Eat thai food',
+    location: 'Mink Quan',
+    date: new Date(),
+  },
+]
+beforeEach(async () => {
+  await Spot.deleteMany({})
+  let spotObject = new Spot(initialSpots[0])
+  await spotObject.save()
+  spotObject = new Spot(initialSpots[1])
+  await spotObject.save()
+})
 
 test('spots are returned as json', async () => {
     await api
