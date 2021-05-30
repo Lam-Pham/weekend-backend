@@ -1,27 +1,15 @@
 
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
-const Spot = require('../models/spot')
-const initialSpots = [
-  {
-    activity: 'Ride bikes',
-    location: 'Long Beach',
-    date: new Date(),
-  },
-  {
-    activity: 'Eat thai food',
-    location: 'Mink Quan',
-    date: new Date(),
-  },
-]
 
 beforeEach(async () => {
   await Spot.deleteMany({})
-  let spotObject = new Spot(initialSpots[0])
+  let spotObject = new Spot(helper.initialSpots[0])
   await spotObject.save()
-  spotObject = new Spot(initialSpots[1])
+  spotObject = new Spot(helper.initialSpots[1])
   await spotObject.save()
 })
 
@@ -38,15 +26,28 @@ test('a valid spot can be added', async () => {
         .expect(200)
         .expect('Content-Type', /application\/json/)
 
-    const response = await api.get('/api/spots')
+    const spotsAtEnd = await helper.spotsInDb()
+    expect(spotsAtEnd).toHaveLength(helper.initialSpots.length + 1)
 
-    const contents = response.body.map(r => [r.activity, r.location])
-
-    expect(response.body).toHaveLength(initialSpots.length + 1)
+    const contents = spotsAtEnd.map(s => s.content)
     expect(contents).toContainEqual(
         ['testing the backend',
         'casa de Lam']
     )
+})
+
+test('spot without content is not added', async () => {
+    const newSpot = {
+        date: new Date()
+    }
+  
+    await api
+        .post('/api/spots')
+        .send(newSpot)
+        .expect(400)
+  
+    const spotsAtEnd = await helper.spotsInDb()
+    expect(spotsAtEnd).toHaveLength(helper.initialSpots.length)
 })
 
 test('spots are returned as json', async () => {
