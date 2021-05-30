@@ -8,15 +8,16 @@ spotsRouter.get('/', async (request, response) => {
 })
 
 spotsRouter.get('/:id', (request, response, next) => {
-    Spot.findById(request.params.id)
-        .then(spot => {
-            if (spot) {
-                response.json(spot)
-            } else {
-                response.status(404).end()
-            } 
-        })
-        .catch(error => next(error))            // passing off to error handling middleware
+    try {
+        const spot = await Spot.findById(request.params.id)
+        if (spot) {
+            response.json(spot)
+        } else {
+            response.status(404).end()
+        }
+    } catch (exception) {
+        next(exception)                     // passing off to error handling middleware
+    }
 })
 
 spotsRouter.post('/', async (request, response, next) => {
@@ -37,11 +38,12 @@ spotsRouter.post('/', async (request, response, next) => {
 })
 
 spotsRouter.delete('/:id', (request, response, next) => {
-    Spot.findByIdAndRemove(request.params.id)
-        .then(() => {
-            response.status(204).end()
-        })
-        .catch(error => next(error))
+    try {
+        const spot = await Spot.findByIdAndRemove(request.params.id)
+        response.status(204).end()
+    } catch (exception) {
+        next(exception)                    
+    }
 })
 
 module.exports = spotsRouter
