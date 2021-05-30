@@ -64,6 +64,20 @@ test('there are at least two spots', async () => {
     expect(response.body).not.toHaveLength(0 || 1)
 })
 
+test('a specific spot can be viewed', async () => {
+    const spotsAtStart = await helper.spotsInDb()
+    const spotToView = spotsAtStart[0]
+    console.log(spotToView)
+
+    const resultSpot = await api
+        .get(`/api/spots/${spotToView.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    const processedSpotToView = JSON.parse(JSON.stringify(spotToView))
+    expect(resultSpot.body).toEqual(processedSpotToView)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
