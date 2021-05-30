@@ -67,7 +67,6 @@ test('there are at least two spots', async () => {
 test('a specific spot can be viewed', async () => {
     const spotsAtStart = await helper.spotsInDb()
     const spotToView = spotsAtStart[0]
-    console.log(spotToView)
 
     const resultSpot = await api
         .get(`/api/spots/${spotToView.id}`)
@@ -76,6 +75,24 @@ test('a specific spot can be viewed', async () => {
 
     const processedSpotToView = JSON.parse(JSON.stringify(spotToView))
     expect(resultSpot.body).toEqual(processedSpotToView)
+})
+
+test('a spot can be deleted', async () => {
+    const spotsAtStart = await helper.spotsInDb()
+    const spotToDelete = spotsAtStart[0]
+
+    await api
+        .delete(`/api/spots/${spotToDelete.id}`)
+        .expect(204)
+
+    const spotsAtEnd = await helper.spotsInDb()
+
+    expect(spotsAtEnd).toHaveLength(
+        helper.initialSpots.length - 1
+    )
+
+    const contents = spotsAtEnd.map(s => [s.activity, s.location])
+    expect(contents).not.toContain([spotToDelete.activity, spotToDelete.location])
 })
 
 afterAll(() => {

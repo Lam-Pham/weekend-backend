@@ -37,7 +37,7 @@ spotsRouter.post('/', async (request, response, next) => {
 })
 
 spotsRouter.delete('/:id', (request, response, next) => {
-    Note.findByIdAndRemove(request.params.id)
+    Spot.findByIdAndRemove(request.params.id)
         .then(() => {
             response.status(204).end()
         })
