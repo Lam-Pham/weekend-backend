@@ -4,6 +4,7 @@ const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
+const Spot = require('../models/spot')
 
 beforeEach(async () => {
   await Spot.deleteMany({})
@@ -29,7 +30,7 @@ test('a valid spot can be added', async () => {
     const spotsAtEnd = await helper.spotsInDb()
     expect(spotsAtEnd).toHaveLength(helper.initialSpots.length + 1)
 
-    const contents = spotsAtEnd.map(s => s.content)
+    const contents = spotsAtEnd.map(s => [s.activity, s.location])
     expect(contents).toContainEqual(
         ['testing the backend',
         'casa de Lam']
