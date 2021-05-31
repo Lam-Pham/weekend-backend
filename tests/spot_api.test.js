@@ -7,11 +7,10 @@ const api = supertest(app)
 const Spot = require('../models/spot')
 
 beforeEach(async () => {
-  await Spot.deleteMany({})
-  let spotObject = new Spot(helper.initialSpots[0])
-  await spotObject.save()
-  spotObject = new Spot(helper.initialSpots[1])
-  await spotObject.save()
+  await Spot.deleteMany({})                                           
+  const spotObjects = helper.initialSpots.map(spot => new Spot(spot))   // array of Mongoose objects
+  const promiseArray = spotObjects.map(spot => spot.save())             // array of promises
+  await Promise.all(promiseArray)                                       // waits for every promise to finish
 })
 
 test('a valid spot can be added', async () => {
