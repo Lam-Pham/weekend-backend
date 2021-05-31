@@ -7,20 +7,16 @@ spotsRouter.get('/', async (request, response) => {
     response.json(spots)
 })
 
-spotsRouter.get('/:id', (request, response, next) => {
-    try {
-        const spot = await Spot.findById(request.params.id)
-        if (spot) {
-            response.json(spot)
-        } else {
-            response.status(404).end()
-        }
-    } catch (exception) {
-        next(exception)                     // passing off to error handling middleware
+spotsRouter.get('/:id', async (request, response) => {
+    const spot = await Spot.findById(request.params.id)
+    if (spot) {
+        response.json(spot)
+    } else {
+        response.status(404).end()
     }
 })
 
-spotsRouter.post('/', async (request, response, next) => {
+spotsRouter.post('/', async (request, response) => {
     const body = request.body
 
     const spot = new Spot({
@@ -28,22 +24,13 @@ spotsRouter.post('/', async (request, response, next) => {
         location: body.location,
         date: new Date(),
     })
-    try {
-        const savedSpot = await spot.save()
-        response.json(savedSpot)
-    } catch (exception) {
-        next(exception)
-    }
-    
+    const savedSpot = await spot.save()
+    response.json(savedSpot)
 })
 
-spotsRouter.delete('/:id', (request, response, next) => {
-    try {
-        const spot = await Spot.findByIdAndRemove(request.params.id)
-        response.status(204).end()
-    } catch (exception) {
-        next(exception)                    
-    }
+spotsRouter.delete('/:id', async (request, response) => {
+    const spot = await Spot.findByIdAndRemove(request.params.id)
+    response.status(204).end()
 })
 
 module.exports = spotsRouter
