@@ -30,7 +30,8 @@
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
     "jest": "^27.0.1",
-    "mongoose": "^5.12.11"
+    "mongoose": "^5.12.11",
+    "mongoose-unique-validator": "^2.0.3"
   },
   "devDependencies": {
     "eslint": "^7.27.0",
