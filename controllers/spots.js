@@ -3,7 +3,8 @@ const spotsRouter = require('express').Router()
 const Spot = require('../models/spot')
 
 spotsRouter.get('/', async (request, response) => {
-    const spots = await Spot.find({})
+    const spots = await Spot
+        .find({}).populate('user', { username: 1, name: 1 })
     response.json(spots)
 })
 
