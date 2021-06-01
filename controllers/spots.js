@@ -19,12 +19,18 @@ spotsRouter.get('/:id', async (request, response) => {
 spotsRouter.post('/', async (request, response) => {
     const body = request.body
 
+    const user = await User.findById(body.userId)
+
     const spot = new Spot({
         activity: body.activity,
         location: body.location,
         date: new Date(),
+        user: user._id
     })
     const savedSpot = await spot.save()
+    user.spots = user.spots.concat(savedSpot._id)           // adding spot to user
+    await user.save()
+
     response.json(savedSpot)
 })
 
