@@ -1,4 +1,5 @@
 const Spot = require('../models/spot')
+const User = require('../models/user')
 
 const initialSpots = [
   {
@@ -26,6 +27,11 @@ const spotsInDb = async () => {
   return spots.map(spot => spot.toJSON())
 }
 
+const usersInDb = async () => {
+    const users = await User.find({})
+    return users.map(u => u.toJSON())
+}
+
 module.exports = {
-  initialSpots, nonExistingId, spotsInDb
+  initialSpots, nonExistingId, spotsInDb, usersInDb
 }
