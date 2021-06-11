@@ -11,6 +11,7 @@ const mongoose = require('mongoose')
 
 const artsRouter = require('./controllers/arts')
 const usersRouter = require('./controllers/users')
+const loginRouter = require('./controllers/login')
 
 logger.info('connecting to', config.MONGODB_URI)
 url = config.MONGODB_URI
@@ -29,6 +30,7 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 app.use('/api/arts', artsRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 
