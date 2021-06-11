@@ -11,7 +11,6 @@ usersRouter.post('/', async (request, response) => {
 
   const user = new User({
     username: body.username,
-    name: body.name,
     passwordHash,
   })
 
@@ -22,7 +21,7 @@ usersRouter.post('/', async (request, response) => {
 
 usersRouter.get('/', async (request, response) => {
     const users = await User
-        .find({}).populate('spots', {activity: 1, location: 1})             // populate swaps out ids for referenced documents
+        .find({}).populate('arts', {piece: 1, description: 1})             // populate swaps out ids for referenced documents
     response.json(users)
 })
 

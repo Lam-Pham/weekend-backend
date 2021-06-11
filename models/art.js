@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 
-const spotSchema = new mongoose.Schema({
-    activity: {
+const artSchema = new mongoose.Schema({
+    piece: {
       type: String,
       required: true
     },
-    location: {
+    description: {
         type: String,
         required: true
     },
@@ -19,7 +19,7 @@ const spotSchema = new mongoose.Schema({
     }
 })
 
-spotSchema.set('toJSON', {
+artSchema.set('toJSON', {
     transform: (document, returnedObject) => {
       returnedObject.id = returnedObject._id.toString()
       delete returnedObject._id
@@ -27,4 +27,4 @@ spotSchema.set('toJSON', {
     }
 })
 
-module.exports = mongoose.model('Spot', spotSchema)
+module.exports = mongoose.model('Art', artSchema)

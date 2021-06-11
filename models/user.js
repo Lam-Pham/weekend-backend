@@ -6,12 +6,11 @@ const userSchema = new mongoose.Schema({
       type: String,
       unique: true
   },
-  name: String,
   passwordHash: String,
-  spots: [
+  arts: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Spot'
+      ref: 'Art'
     }
   ],
 })
