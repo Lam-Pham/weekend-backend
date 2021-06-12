@@ -8,7 +8,7 @@ Content-Type: application/json
 {
     "piece": "Waves",
     "description": "fluid blues",
-    "userId": "60c247cde9c60241b6cab31e"
+
 }
 
 ###
@@ -16,6 +16,15 @@ GET http://localhost:3001/api/users
 
 ###
 POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+    "username": "trungy",
+    "password": "awesome1"
+}
+
+###
+POST http://localhost:3001/api/login
 Content-Type: application/json
 
 {
