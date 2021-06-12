@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const gallerySchema = new mongoose.Schema({
+const capsuleSchema = new mongoose.Schema({
     title: {
       type: String,
       required: true
@@ -21,7 +21,7 @@ const gallerySchema = new mongoose.Schema({
     ]
 })
 
-gallerySchema.set('toJSON', {
+capsuleSchema.set('toJSON', {
     transform: (document, returnedObject) => {
       returnedObject.id = returnedObject._id.toString()
       delete returnedObject._id
@@ -29,4 +29,4 @@ gallerySchema.set('toJSON', {
     }
 })
 
-module.exports = mongoose.model('Gallery', gallerySchema)
+module.exports = mongoose.model('Capsule', capsuleSchema)

@@ -16,6 +16,10 @@ const artSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    },
+    capsule: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Capsule'
     }
 })
 
