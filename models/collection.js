@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const capsuleSchema = new mongoose.Schema({
+const collectionSchema = new mongoose.Schema({
     title: {
       type: String,
       required: true
@@ -21,7 +21,7 @@ const capsuleSchema = new mongoose.Schema({
     ]
 })
 
-capsuleSchema.set('toJSON', {
+collectionSchema.set('toJSON', {
     transform: (document, returnedObject) => {
       returnedObject.id = returnedObject._id.toString()
       delete returnedObject._id
@@ -29,4 +29,4 @@ capsuleSchema.set('toJSON', {
     }
 })
 
-module.exports = mongoose.model('Capsule', capsuleSchema)
+module.exports = mongoose.model('Collection', collectionSchema)
