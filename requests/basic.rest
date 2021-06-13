@@ -31,3 +31,12 @@ Content-Type: application/json
     "username": "trungy",
     "password": "awesome1"
 }
+
+###
+POST http://localhost:3001/api/capsules
+Content-Type: application/json
+
+{
+    "title": "May 2021",
+    "description": "farewell spring"
+}
